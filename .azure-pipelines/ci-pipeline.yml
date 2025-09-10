@@ -29,7 +29,7 @@ stages:
           - task: PublishBuildArtifacts@1
             displayName: "Publish JAR Artifact"
             inputs:
-              PathtoPublish: 'target/*.jar'
+              PathtoPublish: '$(Build.SourcesDirectory)/target/*.jar'
               ArtifactName: 'drop'
 
   - stage: DockerBuild
