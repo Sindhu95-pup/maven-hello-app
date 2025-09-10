@@ -3,8 +3,9 @@ trigger:
     include:
       - main
 
+# Use your own self-hosted agent pool (Default pool by default)
 pool:
-  vmImage: 'ubuntu-latest'
+  name: 'Default'   # 👈 this points to your Mac agent pool
 
 variables:
   imageName: 'maven-hello-app'
@@ -21,8 +22,8 @@ stages:
             inputs:
               mavenPomFile: 'pom.xml'
               goals: 'clean package'
-              javaHomeOption: 'JDKVersion'
-              jdkVersionOption: '1.17'      # JDK version used by build agent
+              javaHomeOption: 'Path'
+              jdkDirectory: '/usr/local/opt/openjdk@17'   # adjust if JAVA_HOME differs
               mavenVersionOption: 'Default'
 
           - task: PublishBuildArtifacts@1
@@ -37,6 +38,8 @@ stages:
     jobs:
       - job: BuildAndPush
         displayName: "Build Docker Image and Push to ACR"
+        pool:
+          name: 'Default'   # 👈 ensure Docker runs on your Mac agent
         steps:
           - task: Docker@2
             displayName: "Build and Push image to ACR"
@@ -44,7 +47,7 @@ stages:
               command: buildAndPush
               repository: $(imageName)
               dockerfile: '**/Dockerfile'
-              containerRegistry: 'acr-connection'   # MSI-based service connection
+              containerRegistry: 'acr-connection'
               tags: |
                 $(Build.BuildId)
                 latest
