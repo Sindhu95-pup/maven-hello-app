@@ -58,11 +58,3 @@ stages:
               tags: |
                 $(Build.BuildId)
                 latest
-          - task: Maven@3
-            displayName: "Use JAVA HOME default"
-            inputs:
-              mavenPomFile: 'pom.xml'
-              goals: 'clean package'
-              javaHomeOption: 'JDKVersion'
-              jdkVersionOption: 'default'    # 👈 tells agent to use whatever JDK is already installed
-              mavenVersionOption: 'Default'
