@@ -26,10 +26,17 @@ stages:
               jdkDirectory: '/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home'   # adjust if JAVA_HOME differs
               mavenVersionOption: 'Default'
 
+          - script: |
+              echo "Sources dir: $(Build.SourcesDirectory)"
+              echo "Default working dir: $(System.DefaultWorkingDirectory)"
+              echo "Listing target folder..."
+              ls -lh $(Build.SourcesDirectory)/target || true
+              ls -lh $(System.DefaultWorkingDirectory)/target || true
+            displayName: "Debug: Where is target?"
           - task: PublishBuildArtifacts@1
             displayName: "Publish JAR Artifact"
             inputs:
-              PathtoPublish: '$(Build.SourcesDirectory)/target/*.jar'
+              PathtoPublish: '$(System.DefaultWorkingDirectory)/target'
               ArtifactName: 'drop'
 
   - stage: DockerBuild
