@@ -1,0 +1,50 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  imageName: 'maven-hello-app'
+
+stages:
+  - stage: Build
+    displayName: "Build Maven App"
+    jobs:
+      - job: MavenBuild
+        displayName: "Maven Build & Test"
+        steps:
+          - task: Maven@3
+            displayName: "Build with Maven"
+            inputs:
+              mavenPomFile: 'pom.xml'
+              goals: 'clean package'
+              javaHomeOption: 'JDKVersion'
+              jdkVersionOption: '1.17'      # JDK version used by build agent
+              mavenVersionOption: 'Default'
+
+          - task: PublishBuildArtifacts@1
+            displayName: "Publish JAR Artifact"
+            inputs:
+              PathtoPublish: 'target/*.jar'
+              ArtifactName: 'drop'
+
+  - stage: DockerBuild
+    displayName: "Docker Build & Push"
+    dependsOn: Build
+    jobs:
+      - job: BuildAndPush
+        displayName: "Build Docker Image and Push to ACR"
+        steps:
+          - task: Docker@2
+            displayName: "Build and Push image to ACR"
+            inputs:
+              command: buildAndPush
+              repository: $(imageName)
+              dockerfile: '**/Dockerfile'
+              containerRegistry: 'acr-connection'   # MSI-based service connection
+              tags: |
+                $(Build.BuildId)
+                latest
