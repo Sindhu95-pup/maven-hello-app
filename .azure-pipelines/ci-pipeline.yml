@@ -69,6 +69,6 @@ stages:
         steps:
           - task: AzureWebAppContainer@1
             inputs:
-              azureSubscription: 'acr-connection'     # same service connection works
+              azureSubscription: 'azure-rm-connection'     # same service connection works
               appName: 'demo-maven-hello'             # must match $WEBAPP name
               containers: 'sindhucontainers.azurecr.io/maven-hello-app:latest'
