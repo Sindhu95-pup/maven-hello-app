@@ -1,6 +1,3 @@
-Perfect 🚀 — here’s a step-by-step reusable checklist you can use for every new Azure DevOps + Docker project.
-
-⸻
 
 📝 DevOps Project Setup Checklist (Azure + Azure DevOps)
 
